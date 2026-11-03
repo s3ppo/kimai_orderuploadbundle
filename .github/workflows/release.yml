@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,21 +16,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Determine version
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            TAG="$GITHUB_REF_NAME"
+          else
+            TAG="v$(jq -r '.version' composer.json)"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
       - name: Check version
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
           COMPOSER_VERSION="$(jq -r '.version' composer.json)"
           KIMAI_VERSION="$(jq -r '.extra.kimai.version' composer.json)"
           echo "Tag: $VERSION, composer.json: $COMPOSER_VERSION, extra.kimai.version: $KIMAI_VERSION"
           test "$VERSION" = "$COMPOSER_VERSION"
           test "$VERSION" = "$KIMAI_VERSION"
 
+      - name: Check release does not exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG existiert bereits. Version in composer.json erhoehen."
+            exit 1
+          fi
+
       - name: Lint PHP
         run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
 
       - name: Build plugin archive
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p dist
           git archive --format=zip --prefix=OrderUploadBundle/ -o "dist/OrderUploadBundle-${VERSION}.zip" HEAD
           unzip -l "dist/OrderUploadBundle-${VERSION}.zip"
@@ -43,9 +61,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          gh release create "$GITHUB_REF_NAME" \
+          gh release create "$TAG" \
             "dist/OrderUploadBundle-${VERSION}.zip" \
             dist/SHA256SUMS \
+            --target "$GITHUB_SHA" \
             --title "OrderUploadBundle ${VERSION}" \
             --generate-notes
