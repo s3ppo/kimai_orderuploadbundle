@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          COMPOSER_VERSION="$(jq -r '.version' composer.json)"
+          KIMAI_VERSION="$(jq -r '.extra.kimai.version' composer.json)"
+          echo "Tag: $VERSION, composer.json: $COMPOSER_VERSION, extra.kimai.version: $KIMAI_VERSION"
+          test "$VERSION" = "$COMPOSER_VERSION"
+          test "$VERSION" = "$KIMAI_VERSION"
+
+      - name: Lint PHP
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Build plugin archive
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p dist
+          git archive --format=zip --prefix=OrderUploadBundle/ -o "dist/OrderUploadBundle-${VERSION}.zip" HEAD
+          unzip -l "dist/OrderUploadBundle-${VERSION}.zip"
+          unzip -l "dist/OrderUploadBundle-${VERSION}.zip" | grep -q ' OrderUploadBundle/composer.json$'
+          unzip -l "dist/OrderUploadBundle-${VERSION}.zip" | grep -q ' OrderUploadBundle/OrderUploadBundle.php$'
+          if unzip -l "dist/OrderUploadBundle-${VERSION}.zip" | grep -q '\.github'; then exit 1; fi
+          cd dist
+          sha256sum "OrderUploadBundle-${VERSION}.zip" > SHA256SUMS
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/OrderUploadBundle-${VERSION}.zip" \
+            dist/SHA256SUMS \
+            --title "OrderUploadBundle ${VERSION}" \
+            --generate-notes
