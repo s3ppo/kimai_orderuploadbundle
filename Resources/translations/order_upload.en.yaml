@@ -1,0 +1,20 @@
+title: Attachments
+empty: No attachments yet.
+col_name: File
+col_size: Size
+col_date: Uploaded
+upload: Upload
+hint: 'Maximum file size: %max% MB. The PHP limits upload_max_filesize and post_max_size apply as well.'
+confirm_delete: Really delete this attachment?
+flash_uploaded: 'Files uploaded: %count%'
+flash_failed: 'Not uploaded (too large or storage error): %count%'
+flash_none: No file was selected.
+flash_csrf: Invalid form token or upload larger than post_max_size.
+flash_deleted: Attachment deleted.
+flash_delete_failed: Attachment not found.
+order_title: Order
+order_help: 'Upload the order document (maximum %max% MB).'
+order_upload_failed: The order document could not be uploaded.
+order_too_large: 'The file is too large (maximum %max% MB).'
+order_confirm_delete: Really remove the order document?
+order_replace_hint: To replace it, edit the project and choose a new document in the "Bestellung" field.

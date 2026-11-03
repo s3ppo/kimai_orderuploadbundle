@@ -1,0 +1,20 @@
+title: Anhänge
+empty: Keine Anhänge vorhanden.
+col_name: Datei
+col_size: Größe
+col_date: Hochgeladen
+upload: Hochladen
+hint: 'Maximale Dateigröße: %max% MB. Zusätzlich greifen die PHP-Limits upload_max_filesize und post_max_size.'
+confirm_delete: Anhang wirklich löschen?
+flash_uploaded: 'Hochgeladene Dateien: %count%'
+flash_failed: 'Nicht hochgeladen (zu groß oder Speicherfehler): %count%'
+flash_none: Es wurde keine Datei ausgewählt.
+flash_csrf: Ungültiges Formular-Token oder Upload größer als post_max_size.
+flash_deleted: Anhang gelöscht.
+flash_delete_failed: Anhang nicht gefunden.
+order_title: Bestellung
+order_help: 'Dokument zur Bestellung hochladen (maximal %max% MB).'
+order_upload_failed: Die Bestellung konnte nicht hochgeladen werden.
+order_too_large: 'Die Datei ist zu groß (maximal %max% MB).'
+order_confirm_delete: Bestellung wirklich entfernen?
+order_replace_hint: Zum Ersetzen das Projekt bearbeiten und ein neues Dokument im Feld "Bestellung" wählen.

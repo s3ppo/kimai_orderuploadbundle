@@ -1,0 +1,6 @@
+project_attachments_controllers:
+    resource: ../../Controller/
+    type: attribute
+    prefix: /{_locale}
+    defaults:
+        _locale: '%locale%'

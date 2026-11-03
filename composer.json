@@ -1,0 +1,22 @@
+{
+  "name": "mos-nas/order-upload-bundle",
+  "description": "Bestellung als Dokument an Kimai-Projekte hochladen, dazu weitere Anhänge",
+  "homepage": "https://github.com/mos-nas",
+  "type": "kimai-plugin",
+  "version": "1.1.0",
+  "require": {
+    "kimai/kimai": "*"
+  },
+  "keywords": [
+    "kimai",
+    "kimai-plugin"
+  ],
+  "license": "MIT",
+  "extra": {
+    "kimai": {
+      "require": 20000,
+      "version": "1.1.0",
+      "name": "Bestellung-Upload"
+    }
+  }
+}

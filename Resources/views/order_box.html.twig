@@ -1,0 +1,22 @@
+{% embed '@theme/embeds/card.html.twig' with {'project': project, 'order': order, 'can_edit': can_edit} %}
+    {% block box_attributes %}id="project_order_box"{% endblock %}
+    {% block box_title %}
+        {{ 'order_title'|trans({}, 'order_upload') }}
+    {% endblock %}
+    {% block box_body %}
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <a href="{{ path('project_order_download', {'id': project.id}) }}">{{ order.name }}</a>
+            <span class="text-secondary">{{ order.size }}</span>
+            <span class="text-secondary">{{ order.modified|date_time }}</span>
+            {% if can_edit %}
+                <form method="post" action="{{ path('project_order_delete', {'id': project.id}) }}" class="d-inline ms-auto" onsubmit="return confirm('{{ 'order_confirm_delete'|trans({}, 'order_upload')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('project_order_' ~ project.id) }}">
+                    <button type="submit" class="btn btn-icon">{{ icon('delete', true) }}</button>
+                </form>
+            {% endif %}
+        </div>
+        {% if can_edit %}
+            <div class="text-secondary small mt-2">{{ 'order_replace_hint'|trans({}, 'order_upload') }}</div>
+        {% endif %}
+    {% endblock %}
+{% endembed %}

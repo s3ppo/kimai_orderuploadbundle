@@ -1,40 +1,39 @@
-# OrderUploadBundle (Bestellung-Upload)
+# OrderUploadBundle
 
-Kimai-Plugin für Projekte:
+Kimai plugin for projects with the following features:
 
-1. **Feld "Bestellung"** im Dialog "Projekt erstellen" und "Projekt bearbeiten": ein Dokument hochladen.
-2. **Box "Bestellung"** auf der Projekt-Detailseite: Download und Entfernen.
-3. **Box "Anhänge"** auf der Projekt-Detailseite: beliebig viele weitere Dateien.
+1. **Order field** in the "Create Project" and "Edit Project" dialogs: upload a document.
+2. **Order box** on the project detail page: download and remove.
+3. **Attachments box** on the project detail page: upload and manage multiple additional files.
 
 ## Installation
 
 ```
-cd /pfad/zu/kimai/var/plugins/
+cd /path/to/kimai/var/plugins/
 unzip OrderUploadBundle.zip
-cd /pfad/zu/kimai
+cd /path/to/kimai
 bin/console kimai:reload --env=prod
 ```
 
-Das Verzeichnis muss exakt `OrderUploadBundle` heißen, `var/` muss für den Webserver-Benutzer beschreibbar sein. Keine Datenbank-Migration nötig.
+The directory must be named exactly `OrderUploadBundle`, and `var/` must be writable by the web server user. No database migration is required.
 
-Docker: `var/data` muss als Volume persistiert sein.
+Docker: `var/data` must be persisted as a volume.
 
-## Verhalten
+## Behavior
 
-- Die Bestellung ist ein Kimai-Meta-Feld ("bestellung") am Projekt. Gespeichert wird nur die Dateikennung in der Meta-Tabelle, die Datei selbst liegt in `var/data/project_attachments/bestellung_dokumente/`.
-- Die weiteren Anhänge liegen unter `var/data/project_attachments/<Projekt-ID>/`.
-- Beides liegt außerhalb des Webroots, Downloads werden immer als Anhang ausgeliefert.
-- Ansehen und Herunterladen: wer das Projekt sehen darf (Recht `view`). Hochladen, Ersetzen und Löschen: wer das Projekt bearbeiten darf (Recht `edit`).
-- Maximal 25 MB pro Datei (`AttachmentStorage::MAX_BYTES`), zusätzlich gelten `upload_max_filesize` und `post_max_size` aus der PHP-Konfiguration.
-- Beim Bearbeiten ohne neue Datei bleibt die Bestellung unverändert.
+- The order is a Kimai meta field ("bestellung") on the project. Only the file identifier is stored in the meta table; the file itself is located in `var/data/project_attachments/bestellung_dokumente/`.
+- Additional attachments are stored in `var/data/project_attachments/<project-id>/`.
+- Both are stored outside the web root; downloads are always served as attachments.
+- Viewing and downloading: anyone with permission to view the project (permission `view`). Uploading, replacing, and deleting: anyone with permission to edit the project (permission `edit`).
+- Maximum 25 MB per file (`AttachmentStorage::MAX_BYTES`), plus PHP configuration limits for `upload_max_filesize` and `post_max_size`.
+- When editing without uploading a new file, the order document remains unchanged.
 
-## Grenzen
+## Limitations
 
-- Pro Projekt gibt es genau eine Bestellung. Ersetzt man sie, bleibt die alte Datei auf der Platte liegen. Beim Entfernen über die Box wird sie gelöscht.
-- Beim Löschen eines Projekts bleiben die Dateien liegen.
-- Schlägt das Speichern des Projekts nach dem Upload an anderer Stelle fehl, muss die Datei im Dialog erneut gewählt werden.
-- Der Name des Uploaders wird nicht gespeichert.
-- Die Verzeichnisse gehören in die Datensicherung (`var/data`).
+- Each project can have exactly one order document. When replaced, the old file remains on disk. Deletion via the order box removes it.
+- When deleting a project, the associated files remain on disk.
+- If project saving fails after upload, the file must be selected again in the dialog.
+- The uploader's name is not recorded.
+- The directories should be included in backups (`var/data`).
 
-Entwickelt gegen die Quellen von Kimai 2.72.0 und Symfony 6.4.49, Test in Kimai 2.71.0 (Docker).
-# kimai_orderuploadbundle
+Developed against Kimai 2.72.0 sources and Symfony 6.4.49; tested with Kimai 2.71.0 (Docker).

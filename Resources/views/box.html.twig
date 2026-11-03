@@ -1,0 +1,52 @@
+{% embed '@theme/embeds/card.html.twig' with {'project': project, 'attachments': attachments, 'can_edit': can_edit, 'max_mb': max_mb} %}
+    {% block box_attributes %}id="project_attachments_box"{% endblock %}
+    {% block box_title %}
+        {{ 'title'|trans({}, 'order_upload') }}
+    {% endblock %}
+    {% block box_body_class %}{% if attachments is not empty %}p-0{% endif %}{% endblock %}
+    {% block box_body %}
+        {% if attachments is empty %}
+            <div class="comment">{{ 'empty'|trans({}, 'order_upload') }}</div>
+        {% else %}
+            <table class="table dataTable">
+                <thead>
+                <tr>
+                    <th>{{ 'col_name'|trans({}, 'order_upload') }}</th>
+                    <th class="d-none d-sm-table-cell text-end">{{ 'col_size'|trans({}, 'order_upload') }}</th>
+                    <th class="d-none d-sm-table-cell">{{ 'col_date'|trans({}, 'order_upload') }}</th>
+                    <th class="actions"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for file in attachments %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('project_attachments_download', {'id': project.id, 'file': file.id}) }}">{{ file.name }}</a>
+                        </td>
+                        <td class="d-none d-sm-table-cell text-end">{{ file.size }}</td>
+                        <td class="d-none d-sm-table-cell">{{ file.modified|date_time }}</td>
+                        <td class="actions">
+                            {% if can_edit %}
+                                <form method="post" action="{{ path('project_attachments_delete', {'id': project.id, 'file': file.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'confirm_delete'|trans({}, 'order_upload')|e('js') }}');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('project_attachments_' ~ project.id) }}">
+                                    <button type="submit" class="btn btn-icon">{{ icon('delete', true) }}</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if can_edit %}
+            <div class="p-3">
+                <form method="post" enctype="multipart/form-data" action="{{ path('project_attachments_upload', {'id': project.id}) }}" class="d-flex flex-wrap gap-2 align-items-center">
+                    <input type="hidden" name="_token" value="{{ csrf_token('project_attachments_' ~ project.id) }}">
+                    <input type="file" name="attachments[]" multiple required class="form-control" style="max-width: 28rem;">
+                    <button type="submit" class="btn btn-primary">{{ 'upload'|trans({}, 'order_upload') }}</button>
+                </form>
+                <div class="text-secondary small mt-2">{{ 'hint'|trans({'%max%': max_mb}, 'order_upload') }}</div>
+            </div>
+        {% endif %}
+    {% endblock %}
+{% endembed %}

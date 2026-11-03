@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    KimaiPlugin\OrderUploadBundle\:
+        resource: '../../'
+        exclude: '../../{DependencyInjection,Resources,Form/OrderFileTransformer.php}'
