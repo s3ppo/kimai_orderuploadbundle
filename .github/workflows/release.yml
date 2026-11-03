@@ -49,7 +49,7 @@ jobs:
       - name: Build plugin archive
         run: |
           mkdir -p dist
-          git archive --format=zip --prefix=OrderUploadBundle/ -o "dist/OrderUploadBundle-${VERSION}.zip" HEAD
+          git archive --format=zip --prefix=OrderUploadBundle/ -o "dist/OrderUploadBundle-${VERSION}.zip" HEAD -- . ':(exclude).github' ':(exclude).gitattributes' ':(exclude).gitignore'
           unzip -l "dist/OrderUploadBundle-${VERSION}.zip"
           unzip -l "dist/OrderUploadBundle-${VERSION}.zip" | grep -q ' OrderUploadBundle/composer.json$'
           unzip -l "dist/OrderUploadBundle-${VERSION}.zip" | grep -q ' OrderUploadBundle/OrderUploadBundle.php$'
