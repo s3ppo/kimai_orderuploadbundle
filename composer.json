@@ -1,7 +1,7 @@
 {
-  "name": "mos-nas/order-upload-bundle",
+  "name": "s3ppo/kimai_orderuploadbundle",
   "description": "Bestellung als Dokument an Kimai-Projekte hochladen, dazu weitere Anhänge",
-  "homepage": "https://github.com/mos-nas",
+  "homepage": "https://github.com/s3ppo/kimai_orderuploadbundle",
   "type": "kimai-plugin",
   "version": "1.1.0",
   "require": {
